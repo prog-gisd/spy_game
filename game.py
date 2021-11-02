@@ -10,6 +10,13 @@ Descripción:
     y Sistemas de Datos (GISD) en el Universidad Politécnica de Madrid (UPM).
 '''
 import random
+from enum import Enum
+
+class TipoFicha(Enum):
+    '''Diferentes tipos de fichas del juego'''
+    JUGADOR = 1
+    ESPIA = 2
+    MURO = 3
 
 class Ficha:
     '''
@@ -20,7 +27,7 @@ class Ficha:
             la ficha en el tablero
         tipo: str contiene el tipo de la ficha
     '''
-    def __init__(self, tipo: str, x:int, y:int):
+    def __init__(self, tipo: TipoFicha, x:int, y:int):
         '''
         Parámetros:
             tipo: tipo de la ficha del juego
@@ -31,7 +38,32 @@ class Ficha:
             "x": x,
             "y": y
         }
-        self.tipo: str = tipo
+        self.tipo: TipoFicha = tipo
+
+class Jugador(Ficha):
+    '''Clase que representa a un jugador de mi juego
+    
+    Atributos:
+        nombre: str con el nombre del jugador
+    '''
+    def __init__(self, nombre: str, x: int, y: int):
+        super().__init__(TipoFicha.JUGADOR, x, y)
+        self.nombre: str = nombre
+        self.pide_secretos()
+
+    def pide_secretos(self, num: int = 2):
+        '''TODO: implementar en el futuro,
+        para pedir un número de secretos
+        igual a num al usuario'''
+        pass
+
+class Espia(Ficha):
+    '''TODO: ¿me interesa?'''
+    pass
+
+class Muro(Ficha):
+    '''TODO: ¿me interesa?'''
+    pass
 
 class Tablero:
     '''
@@ -78,15 +110,19 @@ class Tablero:
         print("-"*(self.ancho*2+1))
         for fila in self.casillas:
             msg = "|" # Barra inicial
-            for casilla in fila:
-                if casilla is None:
+            for ficha in fila: # ficha: Ficha
+                if not ficha:
                     msg += " "
                 else:
-                    match casilla.tipo:
-                        case "Muro":
+                    match ficha.tipo:
+                        case TipoFicha.MURO:
                             msg += "*"
+                        case TipoFicha.ESPIA:
+                            msg += 'e'
+                        case TipoFicha.JUGADOR:
+                            msg += ficha.nombre.capitalize()[0]
                         case _:
-                            msg += casilla.tipo.capitalize()[0]
+                            msg += '?'
                 msg += '|' # Barra después de cada casilla
             print(msg)
             print("-"*(self.ancho*2+1))
@@ -117,6 +153,16 @@ class Tablero:
             for num_columna in range(self.ancho):
                 x: float = random.random()
                 if x < prob:
-                    ficha = Ficha("Muro", num_columna, num_fila)
+                    ficha = Ficha(TipoFicha.MURO, num_columna, num_fila)
                     self.pon_ficha(ficha)
 
+class Turno:
+    '''TODO: ¿Cómo es un turno?'''
+    pass
+
+class Combate:
+    '''TODO: ¿Cómo es un combate/encuentro
+     entre espías y jugadores?
+     
+     ¿Hay espías que son aliados entre ellos?'''
+    pass
